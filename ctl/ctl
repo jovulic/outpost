@@ -196,7 +196,7 @@ ctl_bootstrap_command() {
 	read -r answer
 	if [[ "$answer" =~ ^[Yy]$ ]]; then
 		echo "writing to device..."
-		sudo dd bs=4M if="$iso_path" of="$device_path"
+		sudo dd bs=4M if="$iso_path" of="$device_path" status=progress conv=fsync
 	else
 		echo "not performing write"
 	fi
