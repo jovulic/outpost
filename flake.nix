@@ -57,7 +57,7 @@
               inherit pkgs system;
               modules = [
                 "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-                ./modules
+                ./bootstrap
                 {
                   outpost.bootstrap.enable = true;
                   system.stateVersion = lib.trivial.release;
