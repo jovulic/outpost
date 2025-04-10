@@ -3,12 +3,16 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-24.11";
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     { ... }@inputs:
     let
-      inherit (inputs) nixpkgs;
+      inherit (inputs) self nixpkgs deploy-rs;
       inherit (inputs.nixpkgs) lib;
       systems = [
         "aarch64-linux"
@@ -64,6 +68,31 @@
                 }
               ];
             }).config.system.build.isoImage;
+          system = nixpkgs.lib.nixosSystem {
+            inherit pkgs system;
+            modules = [
+              "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+              ./modules
+              {
+                system.stateVersion = "24.11";
+              }
+            ];
+          };
+        }
+      );
+      deploy = eachSystem (
+        { system, ... }:
+        {
+          nodes = {
+            outpost = {
+              hostname = "outpost.lan";
+              profiles.system = {
+                sshUser = "root";
+                user = "root";
+                path = deploy-rs.lib.${system}.activate.nixos self.packages.system;
+              };
+            };
+          };
         }
       );
     };
