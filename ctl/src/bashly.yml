@@ -1,0 +1,5 @@
+name: ctl
+version: 1.0.0
+commands:
+  - name: bashly
+    help: Regenerate ctl script.
