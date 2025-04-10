@@ -73,9 +73,7 @@
             modules = [
               "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
               ./modules
-              {
-                system.stateVersion = "24.11";
-              }
+              { }
             ];
           };
         }
