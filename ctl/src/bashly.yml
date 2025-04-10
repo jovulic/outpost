@@ -3,3 +3,11 @@ version: 1.0.0
 commands:
   - name: bashly
     help: Regenerate ctl script.
+  - name: bootstrap
+    help: Write the bootstrap iso image to a device.
+    args:
+      - name: device
+        required: true
+        help: Name of device.
+    examples:
+      - ctl bootstrap /dev/sda1

@@ -49,5 +49,22 @@
             };
         }
       );
+      packages = eachSystem (
+        { pkgs, system, ... }:
+        {
+          bootstrap =
+            (nixpkgs.lib.nixosSystem {
+              inherit pkgs system;
+              modules = [
+                "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                ./modules
+                {
+                  outpost.bootstrap.enable = true;
+                  system.stateVersion = lib.trivial.release;
+                }
+              ];
+            }).config.system.build.isoImage;
+        }
+      );
     };
 }

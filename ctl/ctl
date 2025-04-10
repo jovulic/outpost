@@ -26,7 +26,8 @@ ctl_usage() {
 	echo
 	# :command.usage_commands
 	printf "%s\n" "Commands:"
-	printf "  %s   Regenerate ctl script.\n" "bashly"
+	printf "  %s   Regenerate ctl script.\n" "bashly   "
+	printf "  %s   Write the bootstrap iso image to a device.\n" "bootstrap"
 	echo
 
 	# :command.long_usage
@@ -60,6 +61,40 @@ ctl_bashly_usage() {
 		# :command.usage_fixed_flags
 		printf "  %s\n" "--help, -h"
 		printf "    Show this help\n"
+		echo
+
+	fi
+}
+
+# :command.usage
+ctl_bootstrap_usage() {
+	printf "ctl bootstrap - Write the bootstrap iso image to a device.\n\n"
+
+	printf "%s\n" "Usage:"
+	printf "  ctl bootstrap DEVICE\n"
+	printf "  ctl bootstrap --help | -h\n"
+	echo
+
+	# :command.long_usage
+	if [[ -n "$long_usage" ]]; then
+		printf "%s\n" "Options:"
+
+		# :command.usage_fixed_flags
+		printf "  %s\n" "--help, -h"
+		printf "    Show this help\n"
+		echo
+
+		# :command.usage_args
+		printf "%s\n" "Arguments:"
+
+		# :argument.usage
+		printf "  %s\n" "DEVICE"
+		printf "    Name of device.\n"
+		echo
+
+		# :command.usage_examples
+		printf "%s\n" "Examples:"
+		printf "  ctl bootstrap /dev/sda1\n"
 		echo
 
 	fi
@@ -141,6 +176,33 @@ ctl_bashly_command() {
 
 }
 
+# :command.function
+ctl_bootstrap_command() {
+
+	# src/bootstrap_command.sh
+	# shellcheck shell=bash
+
+	device_path="${args[device]}"
+
+	store_path=$(nix build .#bootstrap --print-out-paths)
+	iso_path_files=("$store_path/iso/nixos-"*.iso)
+	iso_path="${iso_path_files[0]}"
+	if [ ! -f "$iso_path" ]; then
+		echo "could not find bootstrap iso in store path $iso_path"
+		exit 1
+	fi
+
+	echo "do you want to write $iso_path to $device_path (y/N)"
+	read -r answer
+	if [[ "$answer" =~ ^[Yy]$ ]]; then
+		echo "writing to device..."
+		sudo dd bs=4M if="$iso_path" of="$device_path"
+	else
+		echo "not performing write"
+	fi
+
+}
+
 # :command.parse_requirements
 parse_requirements() {
 	# :command.fixed_flags_filter
@@ -175,6 +237,13 @@ parse_requirements() {
 			action="bashly"
 			shift
 			ctl_bashly_parse_requirements "$@"
+			shift $#
+			;;
+
+		bootstrap)
+			action="bootstrap"
+			shift
+			ctl_bootstrap_parse_requirements "$@"
 			shift $#
 			;;
 
@@ -259,6 +328,64 @@ ctl_bashly_parse_requirements() {
 
 }
 
+# :command.parse_requirements
+ctl_bootstrap_parse_requirements() {
+	# :command.fixed_flags_filter
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+			--help | -h)
+				long_usage=yes
+				ctl_bootstrap_usage
+				exit
+				;;
+
+			*)
+				break
+				;;
+
+		esac
+	done
+
+	# :command.command_filter
+	action="bootstrap"
+
+	# :command.parse_requirements_while
+	while [[ $# -gt 0 ]]; do
+		key="$1"
+		case "$key" in
+
+			-?*)
+				printf "invalid option: %s\n" "$key" >&2
+				exit 1
+				;;
+
+			*)
+				# :command.parse_requirements_case
+				# :command.parse_requirements_case_simple
+				# :argument.case
+				if [[ -z ${args['device']+x} ]]; then
+					args['device']=$1
+					shift
+				else
+					printf "invalid argument: %s\n" "$key" >&2
+					exit 1
+				fi
+
+				;;
+
+		esac
+	done
+
+	# :command.required_args_filter
+	if [[ -z ${args['device']+x} ]]; then
+		printf "missing required argument: DEVICE\nusage: ctl bootstrap DEVICE\n" >&2
+
+		exit 1
+	fi
+
+}
+
 # :command.initialize
 initialize() {
 	declare -g version="1.0.0"
@@ -280,6 +407,7 @@ run() {
 
 	case "$action" in
 		"bashly") ctl_bashly_command ;;
+		"bootstrap") ctl_bootstrap_command ;;
 	esac
 }
 
