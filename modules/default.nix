@@ -6,5 +6,6 @@
     ./neovim.nix
     ./nix.nix
     ./software.nix
+    ./steam.nix
   ];
 }
