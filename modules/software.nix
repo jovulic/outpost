@@ -101,11 +101,10 @@ with lib;
     # Setup user and enable auto-login.
     users.users.scout = {
       isNormalUser = true;
-      initialPassword = "password";
       extraGroups = [
         "networkmanager"
-        "wheel"
       ];
+      hashedPassword = ""; # allow login without password
     };
     services.displayManager.autoLogin = {
       enable = true;
