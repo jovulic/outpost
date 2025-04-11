@@ -2,7 +2,7 @@
 
 _A single machine provisioned remotely via Nix._
 
-## Description
+## 📌 Description
 
 The repository contains Nix configuration related to my machine called "Outpost".
 
