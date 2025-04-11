@@ -37,9 +37,10 @@ systemctl start wpa_supplicant
 sleep 10
 wpa_cli add_network
 network_id=0
-wpa_cli set_network "$network_id" ssid "@wifi_ssid@"
-wpa_cli set_network "$network_id" psk "@wifi_psk@"
+wpa_cli set_network "$network_id" ssid '"@wifi_ssid@"'
+wpa_cli set_network "$network_id" psk '"@wifi_psk@"'
 wpa_cli enable_network "$network_id"
+sleep 20
 
 # Mounting partitions and installing NixOS...
 mkdir -p /mnt
