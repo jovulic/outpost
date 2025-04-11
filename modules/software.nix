@@ -30,7 +30,38 @@ with lib;
     # - Enable network manager.
     networking = {
       hostName = "outpost";
-      networkmanager.enable = true;
+      networkmanager = {
+        enable = true;
+        ensureProfiles.profiles = {
+          "_" =
+            let
+              ssid = builtins.shell "gopass show -o --nosync wifi | jq -cr '.ssid'";
+              psk = builtins.shell "gopass show -o --nosync wifi | jq -cr '.psk'";
+            in
+            {
+              connection = {
+                id = ssid;
+                type = "wifi";
+              };
+              wifi = {
+                mode = "infrastructure";
+                ssid = ssid;
+              };
+              wifi-security = {
+                auth-alg = "open";
+                key-mgmt = "wpa-psk";
+                psk = psk;
+              };
+              ipv4 = {
+                method = "auto";
+              };
+              ipv6 = {
+                addr-gen-mode = "default";
+                method = "auto";
+              };
+            };
+        };
+      };
     };
 
     # Set timezone.
