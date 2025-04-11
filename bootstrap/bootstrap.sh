@@ -2,11 +2,11 @@
 
 set -veuo pipefail
 
-echo "Clearing data on /dev/nvme0n1..."
+# Clearing data on /dev/nvme0n1...
 wipefs -a /dev/nvme0n1
 dd if=/dev/zero of=/dev/nvme0n1 bs=512 count=10000
 
-echo "Creating paritions..."
+# Creating paritions...
 sfdisk /dev/nvme0n1 <<EOF
 label: gpt
 device: /dev/nvme0n1
@@ -16,13 +16,13 @@ unit: sectors
 3 : type=0FC63DAF-8483-4772-8E79-3D69D8477DE4
 EOF
 
-echo "Configuring luks key..."
+# Configuring luks key...
 dd if=/dev/urandom of=/dev/nvme0n1p1 bs=4096 count=1
 
-echo "Configuring boot partition..."
+# Configuring boot partition...
 mkfs.fat /dev/nvme0n1p2 -F 32 -n boot
 
-echo "Configuring root parition..."
+# Configuring root parition...
 cryptsetup luksFormat /dev/nvme0n1p3 --key-file=/dev/nvme0n1p1 --keyfile-size=4096
 cryptsetup open /dev/nvme0n1p3 cryptroot --key-file=/dev/nvme0n1p1 --keyfile-size=4096
 pvcreate /dev/mapper/cryptroot
@@ -30,7 +30,7 @@ vgcreate pool /dev/mapper/cryptroot
 lvcreate -l '100%FREE' -n root pool
 mkfs.ext4 /dev/pool/root -L root
 
-echo "Configuring WiFI..."
+# Configuring WiFI...
 # We cheat here slightly by (safely) assuming the network id generataed from
 # add_network will be zero. We can improve this by properly parsing this out.
 systemctl start wpa_supplicant
@@ -41,7 +41,7 @@ wpa_cli set_network "$network_id" ssid "@wifi_ssid@"
 wpa_cli set_network "$network_id" psk "@wifi_psk@"
 wpa_cli enable_network "$network_id"
 
-echo "Mounting partitions and installing NixOS..."
+# Mounting partitions and installing NixOS...
 mkdir -p /mnt
 mount /dev/pool/root /mnt
 
@@ -90,6 +90,6 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
 EOF
 nixos-install
 
-echo "Unmount and rebooting..."
+# Rebooting...
 umount /mnt/boot /mnt
 shutdown -r +2
