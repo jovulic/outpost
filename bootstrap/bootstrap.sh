@@ -33,12 +33,12 @@ mkfs.ext4 /dev/pool/root -L root
 echo "Configuring WiFI..."
 # We cheat here slightly by (safely) assuming the network id generataed from
 # add_network will be zero. We can improve this by properly parsing this out.
+systemctl start wpa_supplicant
 wpa_cli add_network
 network_id=0
 wpa_cli set_network "$network_id" ssid "@wifi_ssid@"
 wpa_cli set_network "$network_id" psk "@wifi_psk@"
 wpa_cli enable_network "$network_id"
-systemctl start wpa_supplicant
 
 echo "Mounting partitions and installing NixOS..."
 mkdir -p /mnt
