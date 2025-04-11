@@ -32,7 +32,7 @@
     in
     {
       devShells = eachSystem (
-        { pkgs, ... }:
+        { pkgs, system, ... }:
         {
           default =
             let
@@ -49,6 +49,7 @@
                 pkgs.bash
                 pkgs.bashly
                 ctl
+                deploy-rs.packages.${system}.default
               ];
             };
         }
