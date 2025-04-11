@@ -89,7 +89,7 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
   services.getty.autologinUser = "root";
 }
 EOF
-nixos-install
+nixos-install --no-root-passwd --option experimental-features nix-command flakes
 
 # Rebooting...
 umount /mnt/boot /mnt
