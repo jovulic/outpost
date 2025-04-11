@@ -9,5 +9,9 @@ commands:
       - name: device
         required: true
         help: Name of device.
+    flags:
+      - long: --yes
+        short: -y
+        help: Perform operation without user prompts.
     examples:
       - ctl bootstrap /dev/sda1

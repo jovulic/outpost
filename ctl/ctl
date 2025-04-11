@@ -71,13 +71,19 @@ ctl_bootstrap_usage() {
 	printf "ctl bootstrap - Write the bootstrap iso image to a device.\n\n"
 
 	printf "%s\n" "Usage:"
-	printf "  ctl bootstrap DEVICE\n"
+	printf "  ctl bootstrap DEVICE [OPTIONS]\n"
 	printf "  ctl bootstrap --help | -h\n"
 	echo
 
 	# :command.long_usage
 	if [[ -n "$long_usage" ]]; then
 		printf "%s\n" "Options:"
+
+		# :command.usage_flags
+		# :flag.usage
+		printf "  %s\n" "--yes, -y"
+		printf "    Perform operation without user prompts.\n"
+		echo
 
 		# :command.usage_fixed_flags
 		printf "  %s\n" "--help, -h"
@@ -183,6 +189,12 @@ ctl_bootstrap_command() {
 	# shellcheck shell=bash
 
 	device_path="${args[device]}"
+	yes="${args[--yes]}"
+
+	if [ -n "$yes" ]; then
+		# Refresh sudo credentials if necessary.
+		sudo -v
+	fi
 
 	store_path=$(nix build .#bootstrap --print-out-paths)
 	iso_path_files=("$store_path/iso/nixos-"*.iso)
@@ -192,13 +204,22 @@ ctl_bootstrap_command() {
 		exit 1
 	fi
 
-	echo "Do you want to write $iso_path to $device_path? (y/N)"
-	read -r answer
-	if [[ "$answer" =~ ^[Yy]$ ]]; then
+	unset write
+	if [ -n "$yes" ]; then
+		write=1
+	else
+		echo "Do you want to write $iso_path to $device_path? (y/N)"
+		read -r answer
+		if [[ "$answer" =~ ^[Yy]$ ]]; then
+			write=1
+		fi
+	fi
+
+	if [ -n "$write" ]; then
 		echo "writing to device..."
 		sudo dd bs=4M if="$iso_path" of="$device_path" status=progress conv=fsync
 	else
-		echo "not performing write"
+		echo "cancelled"
 	fi
 
 }
@@ -354,6 +375,13 @@ ctl_bootstrap_parse_requirements() {
 	while [[ $# -gt 0 ]]; do
 		key="$1"
 		case "$key" in
+			# :flag.case
+			--yes | -y)
+
+				# :flag.case_no_arg
+				args['--yes']=1
+				shift
+				;;
 
 			-?*)
 				printf "invalid option: %s\n" "$key" >&2
@@ -379,7 +407,7 @@ ctl_bootstrap_parse_requirements() {
 
 	# :command.required_args_filter
 	if [[ -z ${args['device']+x} ]]; then
-		printf "missing required argument: DEVICE\nusage: ctl bootstrap DEVICE\n" >&2
+		printf "missing required argument: DEVICE\nusage: ctl bootstrap DEVICE [OPTIONS]\n" >&2
 
 		exit 1
 	fi
