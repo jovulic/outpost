@@ -31,9 +31,8 @@ lvcreate -l '100%FREE' -n root pool
 mkfs.ext4 /dev/pool/root -L root
 
 echo "Configuring WiFI..."
-# Not that we can safely assume the netword id given from add_network will be
-# zero. Otherwise, to do it properly, we would want to parse the network id out
-# from the result.
+# We cheat here slightly by (safely) assuming the network id generataed from
+# add_network will be zero. We can improve this by properly parsing this out.
 wpa_cli add_network
 network_id=0
 wpa_cli set_network "$network_id" ssid "@wifi_ssid@"
