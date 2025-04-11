@@ -76,7 +76,7 @@ with lib;
         "wheel"
       ];
     };
-    services.xserver.displayManager.autoLogin = {
+    services.displayManager.autoLogin = {
       enable = true;
       user = "scout";
     };
