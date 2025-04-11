@@ -80,23 +80,27 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
     fsType = "vfat";
   };
   networking = {
+    useNetworkd = true;
+    networkmanager.enable = false;
     hostName = "outpost";
-    networkmanager.enable = true;
+    wireless = {
+      enable = true;
+      networks."@wifi_ssid@" = {
+        psk = "@wifi_psk@";
+      };
+    };
   };
-  environment.etc."NetworkManager/system-connections/_.nmconnection" = { 
-    text = ''
-      [connection]
-      id=@wifi_ssid@
-      type=wifi
-
-      [wifi]
-      mode=infrastructure
-      ssid=@wifi_ssid@
-
-      [wifi-security]
-      key-mgmt=wpa-psk
-      psk=@wifi_psk@
-    ''; 
+  systemd = {
+    network.networks."25-wireless" = {
+      matchConfig = {
+        Name = "wl*";
+      };
+      networkConfig = {
+        DHCP = "yes";
+        IPv6AcceptRA = true;
+      };
+    };
+    network.wait-online.enable = false;
   };
   users.users.root = {
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGdXDo+F2+TVAwH3CLJnK2SUIJR/6HvBeHEcfQbYxjk cardno:17_742_648" ];
