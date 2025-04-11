@@ -31,7 +31,7 @@ with lib;
       };
     in
     mkIf cfg.enable {
-      systemd.services.setupsystem = {
+      systemd.services.bootstrap = {
         enable = true;
         wantedBy = [ "multi-user.target" ];
         after = [ "getty@tty1.service" ];
