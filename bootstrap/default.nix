@@ -22,7 +22,12 @@ with lib;
     let
       bootstrap = pkgs.writeShellApplication {
         name = "bootstrap";
-        text = builtins.readFile ./bootstrap.sh;
+        text = builtins.readFile (
+          pkgs.replaceVars ./bootstrap.sh {
+            wifi_ssid = builtins.shell "gopass show -o --nosync wifi | jq -cr '.ssid'";
+            wifi_psk = builtins.shell "gopass show -o --nosync wifi | jq -cr '.psk'";
+          }
+        );
       };
     in
     mkIf cfg.enable {

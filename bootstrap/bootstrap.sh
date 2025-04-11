@@ -30,6 +30,15 @@ vgcreate pool /dev/mapper/cryptroot
 lvcreate -l '100%FREE' -n root pool
 mkfs.ext4 /dev/pool/root -L root
 
+echo "Configuring WiFI..."
+cat >/etc/wpa_supplicant.conf <<EOF
+network={
+  ssid="@wifi_ssid@"
+  psk="@wifi_psk@"
+}
+EOF
+systemctl start wpa_supplicant
+
 echo "Mounting partitions and installing NixOS..."
 mkdir -p /mnt
 mount /dev/pool/root /mnt
@@ -46,6 +55,11 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
     ./configuration-original.nix
     ./hardware-configuration.nix
   ];
+  nix = {
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
   boot = {
     initrd.luks.devices.luksroot = {
       device = "/dev/nvme0n1p3";
