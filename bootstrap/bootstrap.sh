@@ -108,4 +108,4 @@ nixos-install --no-root-passwd --option experimental-features 'nix-command flake
 
 # Rebooting...
 umount /mnt/boot /mnt
-shutdown -r +2
+shutdown -r +1
