@@ -104,7 +104,7 @@ with lib;
       extraGroups = [
         "networkmanager"
       ];
-      hashedPassword = ""; # allow login without password
+      password = ""; # empty password to for login as no password failed
     };
     services.displayManager.autoLogin = {
       enable = true;
