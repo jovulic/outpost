@@ -31,12 +31,14 @@ lvcreate -l '100%FREE' -n root pool
 mkfs.ext4 /dev/pool/root -L root
 
 echo "Configuring WiFI..."
-cat >/etc/wpa_supplicant.conf <<EOF
-network={
-  ssid="@wifi_ssid@"
-  psk="@wifi_psk@"
-}
-EOF
+# Not that we can safely assume the netword id given from add_network will be
+# zero. Otherwise, to do it properly, we would want to parse the network id out
+# from the result.
+wpa_cli add_network
+network_id=0
+wpa_cli set_network "$network_id" ssid "@wifi_ssid@"
+wpa_cli set_network "$network_id" psk "@wifi_psk@"
+wpa_cli enable_network "$network_id"
 systemctl start wpa_supplicant
 
 echo "Mounting partitions and installing NixOS..."
