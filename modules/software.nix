@@ -118,7 +118,8 @@ with lib;
     # Allow unfree packages.
     nixpkgs.config.allowUnfree = true;
 
-    # Add authorized keys for SSH access.
+    # Enable SSH and add authorized keys.
+    services.openssh.enable = true;
     users.users.root = {
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGdXDo+F2+TVAwH3CLJnK2SUIJR/6HvBeHEcfQbYxjk cardno:17_742_648"
