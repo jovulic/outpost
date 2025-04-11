@@ -81,7 +81,6 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
   };
   networking = {
     useNetworkd = true;
-    networkmanager.enable = false;
     hostName = "outpost";
     wireless = {
       enable = true;
