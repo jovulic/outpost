@@ -19,10 +19,6 @@ with lib;
     };
   };
   config = mkIf cfg.enable {
-    imports = [
-      (modulesPath + "/installer/scan/not-detected.nix")
-    ];
-
     boot = {
       initrd = {
         luks.devices.luksroot = {

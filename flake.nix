@@ -69,30 +69,36 @@
                 }
               ];
             }).config.system.build.isoImage;
-          system = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-              ./modules
-              { }
-            ];
-          };
         }
       );
-      deploy = eachSystem (
-        { system, ... }:
-        {
-          nodes = {
-            outpost = {
-              hostname = "outpost.lan";
-              profiles.system = {
-                sshUser = "root";
-                user = "root";
-                path = deploy-rs.lib.${system}.activate.nixos self.packages.system;
-              };
+      nixosConfigurations = {
+        outpost = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            (
+              { modulesPath, ... }:
+              {
+                imports = [
+                  (modulesPath + "/installer/scan/not-detected.nix")
+                ];
+              }
+            )
+            ./modules
+            { }
+          ];
+        };
+      };
+      deploy = {
+        nodes = {
+          outpost = {
+            hostname = "outpost.lan";
+            profiles.system = {
+              sshUser = "root";
+              user = "root";
+              path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.outpost;
             };
           };
-        }
-      );
+        };
+      };
     };
 }
