@@ -83,7 +83,7 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
     hostName = "outpost";
     networkmanager.enable = true;
   };
-  environment.etc."NetworkManager/system-connections/..nmconnection" = { 
+  environment.etc."NetworkManager/system-connections/@wifi_ssid@.nmconnection" = { 
     mode = "0400";
     text = ''
       [connection]
