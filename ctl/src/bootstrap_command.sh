@@ -10,7 +10,7 @@ if [ ! -f "$iso_path" ]; then
   exit 1
 fi
 
-echo "do you want to write $iso_path to $device_path (y/N)"
+echo "Do you want to write $iso_path to $device_path? (y/N)"
 read -r answer
 if [[ "$answer" =~ ^[Yy]$ ]]; then
   echo "writing to device..."
