@@ -81,6 +81,21 @@ cat >/mnt/etc/nixos/configuration.nix <<EOF
   };
   networking = {
     hostName = "outpost";
+    networkmanager.enable = true;
+  };
+  environment.etc."NetworkManager/system-connections/..nmconnection" = { 
+    mode = "0400";
+    text = ''
+      [connection]
+      id=@wifi_ssid@
+      type=wifi
+
+      [wifi]
+      ssid=@wifi_ssid@
+
+      [wifi-security]
+      psk=@wifi_psk@
+    ''; 
   };
   users.users.root = {
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGdXDo+F2+TVAwH3CLJnK2SUIJR/6HvBeHEcfQbYxjk cardno:17_742_648" ];
