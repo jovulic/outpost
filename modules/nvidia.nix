@@ -18,6 +18,7 @@ with lib;
     };
   };
   config = mkIf cfg.enable {
+    hardware.nvidia.open = true;
     services.xserver.videoDrivers = [ "nvidia" ];
   };
 }
