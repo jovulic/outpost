@@ -2,6 +2,7 @@
 {
   imports = [
     ./firefox.nix
+    ./google-chrome.nix
     ./hardware.nix
     ./neovim.nix
     ./nix.nix
