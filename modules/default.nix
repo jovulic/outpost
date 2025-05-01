@@ -9,5 +9,6 @@
     ./nvidia.nix
     ./software.nix
     ./steam.nix
+    ./xpra.nix
   ];
 }
