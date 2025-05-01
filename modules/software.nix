@@ -62,6 +62,22 @@ with lib;
             };
         };
       };
+
+      firewall = {
+        enable = true;
+        allowedUDPPortRanges = [
+          # https://larian.com/support/faqs/multiplayer-issues_84
+          # lsof -i | grep bg3
+          {
+            from = 23253;
+            to = 23262;
+          }
+          {
+            from = 23243;
+            to = 23252;
+          }
+        ];
+      };
     };
 
     # Set timezone.
