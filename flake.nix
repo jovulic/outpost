@@ -34,24 +34,14 @@
       devShells = eachSystem (
         { pkgs, system, ... }:
         {
-          default =
-            let
-              ctl =
-                with pkgs;
-                writeShellApplication {
-                  name = "ctl";
-                  text = with builtins; readFile ./ctl/ctl;
-                };
-            in
-            pkgs.mkShell {
-              packages = [
-                pkgs.git
-                pkgs.bash
-                pkgs.bashly
-                ctl
-                deploy-rs.packages.${system}.default
-              ];
-            };
+          default = pkgs.mkShell {
+            packages = [
+              pkgs.git
+              pkgs.bash
+              pkgs.just
+              deploy-rs.packages.${system}.default
+            ];
+          };
         }
       );
       packages = eachSystem (
