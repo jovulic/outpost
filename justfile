@@ -1,3 +1,6 @@
+update:
+  nix flake update
+
 deploy:
   deploy
 
