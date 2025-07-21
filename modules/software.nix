@@ -120,7 +120,7 @@ with lib;
       extraGroups = [
         "networkmanager"
       ];
-      hashedPassword = ""; # allow login without password
+      initialPassword = "password";
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGdXDo+F2+TVAwH3CLJnK2SUIJR/6HvBeHEcfQbYxjk cardno:17_742_648"
       ];
