@@ -2,7 +2,7 @@
 {
   imports = [
     ./firefox.nix
-    ./gnome-remote-desktop
+    ./remote-desktop.nix
     ./google-chrome.nix
     ./hardware.nix
     ./neovim.nix
