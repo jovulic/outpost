@@ -96,6 +96,7 @@ with lib;
       xkb = {
         layout = "us";
         variant = "";
+        options = "terminate:ctrl_alt_bksp,numpad:mac";
       };
     };
 
