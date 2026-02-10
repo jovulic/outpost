@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./direnv.nix
     ./firefox.nix
     ./google-chrome.nix
     ./hardware.nix
