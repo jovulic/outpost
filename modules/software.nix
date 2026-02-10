@@ -91,13 +91,19 @@ with lib;
     # - Set US keymap.
     services.xserver = {
       enable = true;
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
       xkb = {
         layout = "us";
         variant = "";
         options = "terminate:ctrl_alt_bksp,numpad:mac";
       };
+    };
+
+    services.desktopManager = {
+      gnome.enable = true;
+    };
+
+    service.displayManager = {
+      gdm.enable = true;
     };
 
     # Enable CUPS to support printing.
