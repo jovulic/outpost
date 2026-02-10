@@ -102,7 +102,7 @@ with lib;
       gnome.enable = true;
     };
 
-    service.displayManager = {
+    services.displayManager = {
       gdm.enable = true;
     };
 
