@@ -22,6 +22,7 @@ with lib;
     environment.systemPackages = [
       pkgs.zip # compressor/archiver for creating and modifying zipfiles
       pkgs.unzip # extraction utility for archives compressed in .zip format
+      pkgs.tmux # terminal multiplexer
     ];
   };
 }
