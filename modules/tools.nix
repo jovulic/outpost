@@ -24,6 +24,7 @@ with lib;
       pkgs.unzip # extraction utility for archives compressed in .zip format
       pkgs.tmux # terminal multiplexer
       pkgs.htop # interactive process viewer
+      pkgs.git # distributed version control system
     ];
   };
 }
